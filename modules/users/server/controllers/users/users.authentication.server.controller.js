@@ -122,7 +122,7 @@ exports.oauthCallback = function (strategy) {
 
        // return res.redirect(redirectURL || sessionRedirectURL || '/');
 
-        return res.redirect('https://powerful-cliffs-35875.herokuapp.com/'||'http://localhost:3000');
+        return res.redirect('https://powerful-cliffs-35875.herokuapp.com');
       });
 
     })(req, res, next);
