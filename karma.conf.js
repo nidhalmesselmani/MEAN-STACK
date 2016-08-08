@@ -1,88 +1,93 @@
-module.exports = function(config) {
+'use strict';
 
-  var appBase   = 'app/';      // transpiled app JS files
-  var appAssets ='/base/app/'; // component assets fetched by Angular's compiler
+/**
+ * Module dependencies.
+ */
+var _ = require('lodash'),
+  defaultAssets = require('./config/assets/default'),
+  testAssets = require('./config/assets/test'),
+  testConfig = require('./config/env/test'),
+  karmaReporters = ['progress'];
 
-  config.set({
-    basePath: '',
+if (testConfig.coverage) {
+  karmaReporters.push('coverage');
+}
+
+// Karma configuration
+module.exports = function (karmaConfig) {
+  karmaConfig.set({
+    // Frameworks to use
     frameworks: ['jasmine'],
-    plugins: [
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-htmlfile-reporter')
-    ],
 
-    customLaunchers: {
-      // From the CLI. Not used here but interesting
-      // chrome setup for travis CI using chromium
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
+    preprocessors: {
+      'modules/*/client/views/**/*.html': ['ng-html2js'],
+      'modules/core/client/app/config.js': ['coverage'],
+      'modules/core/client/app/init.js': ['coverage'],
+      'modules/*/client/*.js': ['coverage'],
+      'modules/*/client/config/*.js': ['coverage'],
+      'modules/*/client/controllers/*.js': ['coverage'],
+      'modules/*/client/directives/*.js': ['coverage'],
+      'modules/*/client/services/*.js': ['coverage']
+    },
+
+    ngHtml2JsPreprocessor: {
+      moduleName: 'mean',
+
+      cacheIdFromPath: function (filepath) {
+        return filepath;
+      },
+    },
+
+    // List of files / patterns to load in the browser
+    files: _.union(defaultAssets.client.lib.js, defaultAssets.client.lib.tests, defaultAssets.client.js, testAssets.tests.client, defaultAssets.client.views),
+
+    // Test results reporter to use
+    // Possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+    reporters: karmaReporters,
+
+    // Configure the coverage reporter
+    coverageReporter: {
+      dir : 'coverage/client',
+      reporters: [
+        // Reporters not supporting the `file` property
+        { type: 'html', subdir: 'report-html' },
+        { type: 'lcov', subdir: 'report-lcov' },
+        // Output coverage to console
+        { type: 'text' }
+      ],
+      instrumenterOptions: {
+        istanbul: { noCompact: true }
       }
     },
-    files: [
-      // System.js for module loading
-      'node_modules/systemjs/dist/system.src.js',
 
-      // Polyfills
-      'node_modules/core-js/client/shim.js',
-
-      // Reflect and Zone.js
-      'node_modules/reflect-metadata/Reflect.js',
-      'node_modules/zone.js/dist/zone.js',
-      'node_modules/zone.js/dist/jasmine-patch.js',
-      'node_modules/zone.js/dist/async-test.js',
-      'node_modules/zone.js/dist/fake-async-test.js',
-
-      // RxJs.
-      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
-      { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
-
-      // Angular 2 itself and the testing library
-      {pattern: 'node_modules/@angular/**/*.js', included: false, watched: false},
-      {pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false},
-
-      {pattern: 'systemjs.config.js', included: false, watched: false},
-      'karma-test-shim.js',
-
-      // transpiled application & spec code paths loaded via module imports
-      {pattern: appBase + '**/*.js', included: false, watched: true},
-
-      // asset (HTML & CSS) paths loaded via Angular's component compiler
-      // (these paths need to be rewritten, see proxies section)
-      {pattern: appBase + '**/*.html', included: false, watched: true},
-      {pattern: appBase + '**/*.css', included: false, watched: true},
-
-      // paths for debugging with source maps in dev tools
-      {pattern: appBase + '**/*.ts', included: false, watched: false},
-      {pattern: appBase + '**/*.js.map', included: false, watched: false}
-    ],
-
-    // proxied base paths for loading assets
-    proxies: {
-      // required for component assets fetched by Angular's compiler
-      "/app/": appAssets
-    },
-
-    exclude: [],
-    preprocessors: {},
-    reporters: ['progress', 'html'],
-
-    // HtmlReporter configuration
-    htmlReporter: {
-      // Open this file to see results in browser
-      outputFile: '_test-output/tests.html',
-
-      // Optional
-      pageTitle: 'Unit Tests',
-      subPageTitle: __dirname
-    },
-
+    // Web server port
     port: 9876,
+
+    // Enable / disable colors in the output (reporters and logs)
     colors: true,
-    logLevel: config.LOG_INFO,
+
+    // Level of logging
+    // Possible values: karmaConfig.LOG_DISABLE || karmaConfig.LOG_ERROR || karmaConfig.LOG_WARN || karmaConfig.LOG_INFO || karmaConfig.LOG_DEBUG
+    logLevel: karmaConfig.LOG_INFO,
+
+    // Enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: false
-  })
-}
+
+    // Start these browsers, currently available:
+    // - Chrome
+    // - ChromeCanary
+    // - Firefox
+    // - Opera
+    // - Safari (only Mac)
+    // - PhantomJS
+    // - IE (only Windows)
+    browsers: ['PhantomJS'],
+
+    // If browser does not capture in given timeout [ms], kill it
+    captureTimeout: 60000,
+
+    // Continuous Integration mode
+    // If true, it capture browsers, run tests and exit
+    singleRun: true
+  });
+};

@@ -1,21 +1,32 @@
-# To build and run with Docker:
-#
-#  $ docker build -t ng2-quickstart .
-#  $ docker run -it --rm -p 3000:3000 -p 3001:3001 ng2-quickstart
-#
-FROM node:latest
+FROM node:0.12
 
-RUN mkdir -p /quickstart /home/nodejs && \
-    groupadd -r nodejs && \
-    useradd -r -g nodejs -d /home/nodejs -s /sbin/nologin nodejs && \
-    chown -R nodejs:nodejs /home/nodejs
+# Install gem sass for  grunt-contrib-sass
+RUN apt-get update -qq && apt-get install -y build-essential
+RUN apt-get install -y ruby
+RUN gem install sass
 
-WORKDIR /quickstart
-COPY package.json typings.json /quickstart/
-RUN npm install --unsafe-perm=true
+WORKDIR /home/mean
 
-COPY . /quickstart
-RUN chown -R nodejs:nodejs /quickstart
-USER nodejs
+# Install Mean.JS Prerequisites
+RUN npm install -g grunt-cli
+RUN npm install -g bower
 
-CMD npm start
+# Install Mean.JS packages
+ADD package.json /home/mean/package.json
+RUN npm install
+
+# Manually trigger bower. Why doesnt this work via npm install?
+ADD .bowerrc /home/mean/.bowerrc
+ADD bower.json /home/mean/bower.json
+RUN bower install --config.interactive=false --allow-root
+
+# Make everything available for start
+ADD . /home/mean
+
+# Set development environment as default
+ENV NODE_ENV development
+
+# Port 3000 for server
+# Port 35729 for livereload
+EXPOSE 3000 35729
+CMD ["grunt"]
