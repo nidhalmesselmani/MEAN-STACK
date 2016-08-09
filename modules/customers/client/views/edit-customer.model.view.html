@@ -23,28 +23,28 @@
              ng-class="{'text-primary':(customer.referred), 'text-pink': !(customer.referred)}"></i>
         </div>
         <div class="col-sm-6">
-          <div class="form-group" show-errors>
+          <div class="form-group">
             <label class="control-label" for="firstName">first Name</label>
             <input name="firstName" type="text" ng-model="customer.firstName" id="firstName" class="form-control" placeholder="firstName" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
               <p class="help-block error-text" ng-message="required">Customer name is required.</p>
             </div>
           </div>
-          <div class="form-group" show-errors>
+          <div class="form-group" >
             <label class="control-label" for="surName">Surname</label>
             <input name="surName" type="text" ng-model="customer.surName" id="surName" class="form-control" placeholder="surname" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
               <p class="help-block error-text" ng-message="required">Customer name is required.</p>
             </div>
           </div>
-          <div class="form-group" show-errors>
+          <div class="form-group">
             <label class="control-label" for="suburb">Suburb</label>
             <input name="suburb" type="text" ng-model="customer.suburb" id="suburb" class="form-control" placeholder="suburb" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
               <p class="help-block error-text" ng-message="required">Customer name is required.</p>
             </div>
           </div>
-          <div class="form-group" show-errors>
+          <div class="form-group">
             <label class="control-label" for="country"> Country</label>
             <input name="country" type="text" ng-model="customer.country" id="country" class="form-control" placeholder="country" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
@@ -56,14 +56,14 @@
       <div class="row">
 
         <div class="col-sm-6 col-sm-push-6">
-          <div class="form-group" show-errors>
+          <div class="form-group" >
             <label class="control-label" for="phone">Phone</label>
             <input name="phone" type="text" ng-model="customer.phone" id="phone" class="form-control" placeholder="phone" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
               <p class="help-block error-text" ng-message="required">Customer name is required.</p>
             </div>
           </div>
-          <div class="form-group" show-errors>
+          <div class="form-group" >
             <label class="control-label" for="email"> Email</label>
             <input name="email" type="text" ng-model="customer.email" id="email" class="form-control" placeholder="email" required>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
@@ -75,7 +75,7 @@
 
         <div class="col-sm-6 col-sm-pull-6">
 
-          <div class="form-group" show-errors>
+          <div class="form-group" >
             <label class="control-label" for="referred">Referred</label>
             <input name="referred" type="checkbox" ng-model="customer.referred" id="referred" class="form-control checkbox-left" placeholder="referred" z>
             <div ng-messages="vm.form.customerForm.name.$error" role="alert">
@@ -84,7 +84,7 @@
           </div>
 
 
-          <div class="form-group" show-errors>
+          <div class="form-group">
             <label class="control-label" for="channel"> Channel</label>
             <select ng-model="customer.channel"  id="channel" class="form-control" ng-options="channelItem.item for channelItem in channelOptions">
             <option value=""> -- choose channel --</option>
@@ -126,9 +126,7 @@
 
 
 
-      <div ng-show="vm.error" class="text-danger">
-        <strong ng-bind="vm.error"></strong>
-      </div></div>
+     </div>
     </fieldset>
   </form>
 

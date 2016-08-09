@@ -4,20 +4,7 @@
   // Customers controller
   angular
     .module('customers')
-    .controller('CustomersController',CustomersController)
-      .directive('customerList',['CustomersService','Notify',
-        function (CustomersService,Notify) {
-          return {
-            restrict: 'E',
-            transclude: true,
-            templateUrl: 'modules/customers/client/views/customer-list-template.html',
-            link: function ($scope){
-              Notify.getMsg('NewCustomer',function () {
-                $scope.Ctrl.customers = CustomersService.query();
-              });
-            }
-          };
-        }]);
+    .controller('CustomersController',CustomersController);
 
   CustomersController.$inject = ['$scope','$state','Authentication','customerResolve'];
 

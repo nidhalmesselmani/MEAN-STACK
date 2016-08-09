@@ -11,7 +11,7 @@
     var vm = this;
     vm.customers = CustomersService.query();
 
-
+    console.log(vm.customers);
     //Open a modal window to create a single customer record
     vm.modalCreate = function (size) {
       console.log('hi');
