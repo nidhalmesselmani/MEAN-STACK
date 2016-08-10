@@ -5,9 +5,9 @@
     .module('customers')
     .controller('CustomersListController', CustomersListController);
 
-  CustomersListController.$inject = ['CustomersService','$log','$modal','$scope','Notify'];
+  CustomersListController.$inject = ['CustomersService','$log','$modal','$scope','Notify','Socket'];
 
-  function CustomersListController(CustomersService,$log,$modal,$scope,Notify) {
+  function CustomersListController(CustomersService,$log,$modal,$scope,Notify,Socket) {
     var vm = this;
     vm.customers = CustomersService.query();
 
@@ -105,7 +105,7 @@
         vm.customers = CustomersService.query();
       }
     };
-
+    console.log(Socket);
   }
 
 
