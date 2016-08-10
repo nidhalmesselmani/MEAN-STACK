@@ -106,6 +106,11 @@ angular.element(document).ready(function () {
 'use strict';
 
 // Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('chat');
+
+'use strict';
+
+// Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');
 ApplicationConfiguration.registerModule('core.admin', ['core']);
 ApplicationConfiguration.registerModule('core.admin.routes', ['ui.router']);
@@ -122,6 +127,79 @@ ApplicationConfiguration.registerModule('core.admin.routes', ['ui.router']);
 ApplicationConfiguration.registerModule('users', ['core']);
 ApplicationConfiguration.registerModule('users.admin', ['core.admin']);
 ApplicationConfiguration.registerModule('users.admin.routes', ['core.admin.routes']);
+
+'use strict';
+
+// Configuring the Chat module
+angular.module('chat').run(['Menus',
+  function (Menus) {
+    // Set top bar menu items
+    Menus.addMenuItem('topbar', {
+      title: 'Chat',
+      state: 'chat'
+    });
+  }
+]);
+
+'use strict';
+
+// Configure the 'chat' module routes
+angular.module('chat').config(['$stateProvider',
+  function ($stateProvider) {
+    $stateProvider
+      .state('chat', {
+        url: '/chat',
+        templateUrl: 'modules/chat/client/views/chat.client.view.html',
+        data: {
+          roles: ['user', 'admin']
+        }
+      });
+  }
+]);
+
+'use strict';
+
+// Create the 'chat' controller
+angular.module('chat').controller('ChatController', ['$scope', '$location', 'Authentication', 'Socket',
+  function ($scope, $location, Authentication, Socket) {
+    // Create a messages array
+    $scope.messages = [];
+
+    // If user is not signed in then redirect back home
+    if (!Authentication.user) {
+      $location.path('/');
+    }
+
+    // Make sure the Socket is connected
+    if (!Socket.socket) {
+      Socket.connect();
+    }
+
+    // Add an event listener to the 'chatMessage' event
+    Socket.on('chatMessage', function (message) {
+      $scope.messages.unshift(message);
+    });
+
+    // Create a controller method for sending messages
+    $scope.sendMessage = function () {
+      // Create a new message object
+      var message = {
+        text: this.messageText
+      };
+
+      // Emit a 'chatMessage' message event
+      Socket.emit('chatMessage', message);
+
+      // Clear the message text
+      this.messageText = '';
+    };
+
+    // Remove the event listener when the controller instance is destroyed
+    $scope.$on('$destroy', function () {
+      Socket.removeListener('chatMessage');
+    });
+  }
+]);
 
 'use strict';
 
@@ -703,20 +781,7 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
   // Customers controller
   angular
     .module('customers')
-    .controller('CustomersController',CustomersController)
-      .directive('customerList',['CustomersService','Notify',
-        function (CustomersService,Notify) {
-          return {
-            restrict: 'E',
-            transclude: true,
-            templateUrl: 'modules/customers/client/views/customer-list-template.html',
-            link: function ($scope){
-              Notify.getMsg('NewCustomer',function () {
-                $scope.Ctrl.customers = CustomersService.query();
-              });
-            }
-          };
-        }]);
+    .controller('CustomersController',CustomersController);
 
   CustomersController.$inject = ['$scope','$state','Authentication','customerResolve'];
 
@@ -775,13 +840,13 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
     .module('customers')
     .controller('CustomersListController', CustomersListController);
 
-  CustomersListController.$inject = ['CustomersService','$log','$modal','$scope','Notify'];
+  CustomersListController.$inject = ['CustomersService','$log','$modal','$scope','Notify','Socket'];
 
-  function CustomersListController(CustomersService,$log,$modal,$scope,Notify) {
+  function CustomersListController(CustomersService,$log,$modal,$scope,Notify,Socket) {
     var vm = this;
     vm.customers = CustomersService.query();
 
-
+    console.log(vm.customers);
     //Open a modal window to create a single customer record
     vm.modalCreate = function (size) {
       console.log('hi');
@@ -875,11 +940,34 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
         vm.customers = CustomersService.query();
       }
     };
-
+    console.log(Socket);
   }
 
 
 
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('customers')
+    .directive('customerList', customerList);
+
+  customerList.$inject = ['CustomersService','Notify'];
+
+  function customerList(CustomersService,Notify) {
+    return {
+      templateUrl: 'modules/customers/client/views/customer-list-template.html',
+      transclude: true,
+      restrict: 'E',
+      link: function ($scope){
+        Notify.getMsg('NewCustomer',function () {
+          $scope.Ctrl.customers = CustomersService.query();
+        });
+      }
+    };
+  }
 })();
 
 //Customers service used to communicate Customers REST endpoints
@@ -888,11 +976,33 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
 
   angular
     .module('customers')
-    .factory('CustomersService', CustomersService).factory('Notify', Notify);
+    .factory('CustomersService', CustomersService);
 
-  Notify.$inject = ['$rootScope'];
+
   CustomersService.$inject = ['$resource'];
 
+
+  function CustomersService($resource) {
+
+
+
+    return $resource('api/customers/:customerId', {
+      customerId: '@_id'
+    }, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('customers')
+      .factory('Notify', Notify);
+  Notify.$inject = ['$rootScope'];
   function Notify($rootScope) {
     var notify = {};
 
@@ -914,19 +1024,6 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
     return notify;
   }
 
-
-  function CustomersService($resource) {
-
-
-
-    return $resource('api/customers/:customerId', {
-      customerId: '@_id'
-    }, {
-      update: {
-        method: 'PUT'
-      }
-    });
-  }
 })();
 
 'use strict';
