@@ -69,7 +69,7 @@ module.exports = {
   mailer: {
     from: process.env.MAILER_FROM || 'nidhal47@gmail.com',
     options: {
-      service: process.env.MAILER_SERVICE_PROVIDER || 'smtp',
+      service: process.env.MAILER_SERVICE_PROVIDER || 'gmail',
       auth: {
         user: process.env.MAILER_EMAIL_ID || 'nidhal47@gmail.com',
         pass: process.env.MAILER_PASSWORD || 'N23/12/1963'
