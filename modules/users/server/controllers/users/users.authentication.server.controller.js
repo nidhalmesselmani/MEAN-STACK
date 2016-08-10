@@ -122,7 +122,7 @@ exports.oauthCallback = function (strategy) {
 
        // return res.redirect(redirectURL || sessionRedirectURL || '/');
 
-        return res.redirect('https://powerful-cliffs-35875.herokuapp.com');
+        return res.redirect('https://tranquil-savannah-70278.herokuapp.com');
       });
 
     })(req, res, next);
