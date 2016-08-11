@@ -103,6 +103,6 @@ module.exports = function (app, db) {
       require(path.resolve(socketConfiguration))(io, socket);
     });
   });
-
+  app.set('socketio', io);
   return server;
 };

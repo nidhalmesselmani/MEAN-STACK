@@ -22,6 +22,7 @@ exports.create = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      req.app.get('socketio').emit('customeradded',customer);
       res.jsonp(customer);
     }
   });
@@ -55,6 +56,7 @@ exports.update = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+
       res.jsonp(customer);
     }
   });
@@ -72,6 +74,7 @@ exports.delete = function(req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+      req.app.get('socketio').emit('chatMessagelol','trol');
       res.jsonp(customer);
     }
   });
@@ -80,13 +83,15 @@ exports.delete = function(req, res) {
 /**
  * List of Customers
  */
-exports.list = function(req, res) { 
+exports.list = function(req, res) {
   Customer.find().sort('-created').populate('user', 'displayName').exec(function(err, customers) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
+
+
       res.jsonp(customers);
     }
   });

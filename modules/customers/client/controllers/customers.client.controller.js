@@ -6,9 +6,9 @@
     .module('customers')
     .controller('CustomersController',CustomersController);
 
-  CustomersController.$inject = ['$scope','$state','Authentication','customerResolve'];
+  CustomersController.$inject = ['$scope','$state','Authentication','customerResolve','Socket'];
 
-  function CustomersController($scope,$state,Authentication,customer) {
+  function CustomersController($scope,$state,Authentication,customer,Socket) {
     var vm = this;
 
     vm.authentication = Authentication;
