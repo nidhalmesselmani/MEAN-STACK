@@ -50,7 +50,7 @@ exports.delete = function (req, res) {
         message: errorHandler.getErrorMessage(err)
       });
     }
-
+    req.app.get('socketio').emit('deleteuser',user);
     res.json(user);
   });
 };

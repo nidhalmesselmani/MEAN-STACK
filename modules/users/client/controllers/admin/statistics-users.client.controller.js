@@ -84,6 +84,34 @@
       };
 
     });
+    Socket.on('deleteuser', function (message) {
+      switch(message.provider) {
+        case 'facebook':
+          $scope.Fac--;
+          break;
+        case 'google':
+          $scope.Goo--;
+          break;
+        case 'linkedin':
+          $scope.Lin--;
+          break;
+        case 'github':
+          $scope.Git--;
+          break;
+        case 'local':
+          $scope.Loc--;
+          break;
+      }
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+    });
 
 
 
