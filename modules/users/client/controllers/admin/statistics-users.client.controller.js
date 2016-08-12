@@ -21,67 +21,27 @@
 
       $scope.Loc = $scope.Loc + 1;
 
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signlinkedin', function (message) {
       $scope.Lin = $scope.Lin + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signfacebook', function (message) {
       $scope.Fac = $scope.Fac + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signgoogle', function (message) {
       $scope.Goo = $scope.Goo + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signgithub', function (message) {
       $scope.Git = $scope.Git + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('deleteuser', function (message) {
@@ -102,6 +62,17 @@
           $scope.Loc--;
           break;
       }
+      displaybarchart();
+    });
+
+
+
+
+
+
+    init();
+
+    function displaybarchart() {
       $scope.bar = {
         labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
         series: ['provider'],
@@ -111,12 +82,10 @@
         ]
 
       };
-    });
+    }
 
 
 
-
-    init();
 
     function init() {
       $scope.users = {};
@@ -141,17 +110,9 @@
               break;
           }
         });
+        displaybarchart();
 
 
-        $scope.bar = {
-          labels: ['Facebook','Gooogle+','Linkedin','Github','Local'],
-          series: ['provider'],
-
-          data: [
-            [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-          ]
-
-        };
 
       });
 
