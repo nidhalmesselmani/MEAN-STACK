@@ -33,8 +33,9 @@ module.exports = function (config) {
       providerIdentifierField: 'id',
       providerData: providerData
     };
-
+    
     // Save the user OAuth profile
+    req.app.get('socketio').emit('signgoogle');
     users.saveOAuthUserProfile(req, providerUserProfile, done);
   }));
 };

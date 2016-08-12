@@ -36,6 +36,7 @@ module.exports = function (config) {
     };
 
     // Save the user OAuth profile
+    req.app.get('socketio').emit('signfacebook');
     users.saveOAuthUserProfile(req, providerUserProfile, done);
 
     function generateUsername(profile) {
@@ -46,8 +47,9 @@ module.exports = function (config) {
       } else if (profile.name) {
         username = profile.name.givenName[0] + profile.name.familyName;
       }
-
+       
       return username.toLowerCase() || undefined;
     }
+
   }));
 };

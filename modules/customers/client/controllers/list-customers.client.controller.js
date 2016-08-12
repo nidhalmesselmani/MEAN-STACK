@@ -10,7 +10,7 @@
   function CustomersListController(CustomersService,$log,$modal,$scope,Notify,Socket) {
     var vm = this;
     vm.customers = CustomersService.query();
-$scope.index = {};
+    $scope.index = {};
     console.log(vm.customers);
     //Open a modal window to create a single customer record
     vm.modalCreate = function (size) {
@@ -112,9 +112,9 @@ $scope.index = {};
     // Add an event listener to the 'chatMessage' event
     Socket.on('chatMessagelol', function (message) {
 
-       vm.customers.splice($scope.index,1);
+      vm.customers.splice($scope.index,1);
       
-      //   vm.customers = CustomersService.query();
+      
 
     });
     Socket.on('customeradded', function (message) {

@@ -4,6 +4,12 @@
 angular.module('users.admin.routes').config(['$stateProvider',
   function ($stateProvider) {
     $stateProvider
+        .state('statistics-users', {
+          url: '/statistics-users',
+          templateUrl: 'modules/users/client/views/statistics-users.client.view.html',
+          controller: 'StatisticsUsersController',
+          controllerAs: 'vm'
+        })
       .state('admin.users', {
         url: '/users',
         templateUrl: 'modules/users/client/views/admin/list-users.client.view.html',

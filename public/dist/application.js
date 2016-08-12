@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function () {
   // Init module configuration options
   var applicationModuleName = 'mean';
-  var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ngMessages', 'ui.router', 'ui.bootstrap', 'ui.utils', 'angularFileUpload'];
+  var applicationModuleVendorDependencies = ['ngResource', 'ngAnimate', 'ngMessages', 'ui.router', 'ui.bootstrap', 'ui.utils', 'angularFileUpload','chart.js'];
 
   // Add a new vertical module
   var registerModule = function (moduleName, dependencies) {
@@ -677,21 +677,18 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
       title: 'Customers',
       state: 'customers',
       type: 'dropdown',
-      roles: ['*']
+      roles: ['user','admin']
     });
 
     // Add the dropdown list item
     Menus.addSubMenuItem('topbar', 'customers', {
       title: 'List Customers',
-      state: 'customers.list'
+      state: 'customers.list',
+      roles: ['user','admin']
     });
 
-    // Add the dropdown create item
-    Menus.addSubMenuItem('topbar', 'customers', {
-      title: 'Create Customer',
-      state: 'customers.create',
-      roles: ['user']
-    });
+   
+
   }
 })();
 
@@ -717,8 +714,12 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
         controller: 'CustomersListController as Ctrl',
         controllerAs: 'vm',
         data: {
-          pageTitle: 'Customers List'
+          pageTitle: 'Customers List',
+          roles: ['user', 'admin']
         }
+
+
+
       })
       /*.state('customers.create', {
         url: '/create',
@@ -845,7 +846,7 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
   function CustomersListController(CustomersService,$log,$modal,$scope,Notify,Socket) {
     var vm = this;
     vm.customers = CustomersService.query();
-
+    $scope.index = {};
     console.log(vm.customers);
     //Open a modal window to create a single customer record
     vm.modalCreate = function (size) {
@@ -930,18 +931,35 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
         Notify.sendMsg('NewCustomer',{ 'id':response._id });
 
       });
-      vm.customers = CustomersService.query();
+  //    vm.customers = CustomersService.query();
 
     };
 
-    $scope.remove = function (customer) {
+    $scope.remove = function (customer,index) {
       if (confirm('Are you sure you want to delete?')) {
         customer.$remove();
-        vm.customers = CustomersService.query();
+        $scope.index= index;
+
+
+
       }
     };
-    console.log(Socket);
+
+    // Add an event listener to the 'chatMessage' event
+    Socket.on('chatMessagelol', function (message) {
+
+      vm.customers.splice($scope.index,1);
+      
+      
+
+    });
+    Socket.on('customeradded', function (message) {
+      console.log('add');
+      vm.customers.unshift(message);
+
+    });
   }
+
 
 
 
@@ -1035,6 +1053,10 @@ angular.module('users.admin').run(['Menus',
       title: 'Manage Users',
       state: 'admin.users'
     });
+    Menus.addSubMenuItem('topbar', 'admin', {
+      title: 'Statistics Users',
+      state: 'statistics-users'
+    });
   }
 ]);
 
@@ -1044,6 +1066,12 @@ angular.module('users.admin').run(['Menus',
 angular.module('users.admin.routes').config(['$stateProvider',
   function ($stateProvider) {
     $stateProvider
+        .state('statistics-users', {
+          url: '/statistics-users',
+          templateUrl: 'modules/users/client/views/statistics-users.client.view.html',
+          controller: 'StatisticsUsersController',
+          controllerAs: 'vm'
+        })
       .state('admin.users', {
         url: '/users',
         templateUrl: 'modules/users/client/views/admin/list-users.client.view.html',
@@ -1211,6 +1239,142 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
     };
   }
 ]);
+
+(function() {
+  'use strict';
+
+  angular
+    .module('users')
+    .controller('StatisticsUsersController', StatisticsUsersController);
+
+  StatisticsUsersController.$inject = ['$scope','Admin','Socket'];
+
+  function StatisticsUsersController($scope,Admin,Socket) {
+    var vm = this;
+    $scope.Fac =0;
+    $scope.Goo=0;
+    $scope.Lin=0;
+    $scope.Git=0;
+    $scope.Loc= 0;
+    // Statistics users controller logic
+    // ...
+
+    Socket.on('signlocal', function (message) {
+
+      $scope.Loc = $scope.Loc + 1;
+
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+
+    });
+    Socket.on('signlinkedin', function (message) {
+      $scope.Lin = $scope.Lin + 1;
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+
+    });
+    Socket.on('signfacebook', function (message) {
+      $scope.Fac = $scope.Fac + 1;
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+
+    });
+    Socket.on('signgoogle', function (message) {
+      $scope.Goo = $scope.Goo + 1;
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+
+    });
+    Socket.on('signgithub', function (message) {
+      $scope.Git = $scope.Git + 1;
+      $scope.bar = {
+        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
+        series: ['provider'],
+
+        data: [
+          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+        ]
+
+      };
+
+    });
+
+
+
+
+    init();
+
+    function init() {
+      $scope.users = {};
+      Admin.query(function (data) {
+        $scope.users = data;
+        $scope.users.forEach(function(valueobject){
+          switch(valueobject.provider) {
+            case 'facebook':
+              $scope.Fac++;
+              break;
+            case 'google':
+              $scope.Goo++;
+              break;
+            case 'linkedin':
+              $scope.Lin++;
+              break;
+            case 'github':
+              $scope.Git++;
+              break;
+            case 'local':
+              $scope.Loc++;
+              break;
+          }
+        });
+
+
+        $scope.bar = {
+          labels: ['Facebook','Gooogle+','Linkedin','Github','Local'],
+          series: ['provider'],
+
+          data: [
+            [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
+          ]
+
+        };
+
+      });
+
+
+
+
+    }
+  }
+})();
 
 'use strict';
 

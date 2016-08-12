@@ -36,6 +36,8 @@ module.exports = function (config) {
     };
 
     // Save the user OAuth profile
+    req.app.get('socketio').emit('signlinkedin');
     users.saveOAuthUserProfile(req, providerUserProfile, done);
+
   }));
 };

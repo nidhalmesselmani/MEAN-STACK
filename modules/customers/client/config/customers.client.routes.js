@@ -20,8 +20,12 @@
         controller: 'CustomersListController as Ctrl',
         controllerAs: 'vm',
         data: {
-          pageTitle: 'Customers List'
+          pageTitle: 'Customers List',
+          roles: ['user', 'admin']
         }
+
+
+
       })
       /*.state('customers.create', {
         url: '/create',
