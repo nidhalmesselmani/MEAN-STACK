@@ -1,11 +1,12 @@
 'use strict';
 
 // Create the 'chat' controller
-angular.module('chat').controller('ChatController', ['$scope', '$location', 'Authentication', 'Socket',
-  function ($scope, $location, Authentication, Socket) {
+angular.module('chat').controller('ChatController', ['$scope', '$location', 'Authentication', 'Socket','chatService',
+  function ($scope, $location, Authentication, Socket,chatService) {
     // Create a messages array
-    $scope.messages = [];
-
+    $scope.messages = chatService.query();
+    console.log($scope.messages);
+console.log($scope);
     // If user is not signed in then redirect back home
     if (!Authentication.user) {
       $location.path('/');
@@ -23,9 +24,10 @@ angular.module('chat').controller('ChatController', ['$scope', '$location', 'Aut
 
     // Create a controller method for sending messages
     $scope.sendMessage = function () {
+      console.log(chatService.save($scope.chat));
       // Create a new message object
       var message = {
-        text: this.messageText
+        text: $scope.chat.text
       };
 
       // Emit a 'chatMessage' message event
