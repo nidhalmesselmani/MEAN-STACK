@@ -160,11 +160,10 @@ angular.module('chat').config(['$stateProvider',
 'use strict';
 
 // Create the 'chat' controller
-angular.module('chat').controller('ChatController', ['$scope', '$location', 'Authentication', 'Socket',
-  function ($scope, $location, Authentication, Socket) {
+angular.module('chat').controller('ChatController', ['$scope', '$location', 'Authentication', 'Socket','chatService',
+  function ($scope, $location, Authentication, Socket,chatService) {
     // Create a messages array
-    $scope.messages = [];
-
+    $scope.messages = chatService.query();
     // If user is not signed in then redirect back home
     if (!Authentication.user) {
       $location.path('/');
@@ -182,9 +181,10 @@ angular.module('chat').controller('ChatController', ['$scope', '$location', 'Aut
 
     // Create a controller method for sending messages
     $scope.sendMessage = function () {
+      console.log(chatService.save($scope.chat));
       // Create a new message object
       var message = {
-        text: this.messageText
+        text: $scope.chat.text
       };
 
       // Emit a 'chatMessage' message event
@@ -200,6 +200,24 @@ angular.module('chat').controller('ChatController', ['$scope', '$location', 'Aut
     });
   }
 ]);
+
+(function () {
+  'use strict';
+
+  angular
+    .module('chat')
+    .factory('chatService', chatService);
+
+  chatService.$inject = ['$resource'];
+
+  function chatService($resource) {
+    // Chat service logic
+    // ...
+
+    // Public API
+    return $resource('api/chat');
+  }
+})();
 
 'use strict';
 
@@ -1263,67 +1281,27 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
 
       $scope.Loc = $scope.Loc + 1;
 
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signlinkedin', function (message) {
       $scope.Lin = $scope.Lin + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signfacebook', function (message) {
       $scope.Fac = $scope.Fac + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signgoogle', function (message) {
       $scope.Goo = $scope.Goo + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('signgithub', function (message) {
       $scope.Git = $scope.Git + 1;
-      $scope.bar = {
-        labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
-        series: ['provider'],
-
-        data: [
-          [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-        ]
-
-      };
+      displaybarchart();
 
     });
     Socket.on('deleteuser', function (message) {
@@ -1344,6 +1322,17 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
           $scope.Loc--;
           break;
       }
+      displaybarchart();
+    });
+
+
+
+
+
+
+    init();
+
+    function displaybarchart() {
       $scope.bar = {
         labels: ['Facebook', 'Gooogle+', 'Linkedin', 'Github', 'Local'],
         series: ['provider'],
@@ -1353,12 +1342,10 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
         ]
 
       };
-    });
+    }
 
 
 
-
-    init();
 
     function init() {
       $scope.users = {};
@@ -1383,17 +1370,9 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
               break;
           }
         });
+        displaybarchart();
 
 
-        $scope.bar = {
-          labels: ['Facebook','Gooogle+','Linkedin','Github','Local'],
-          series: ['provider'],
-
-          data: [
-            [$scope.Fac, $scope.Goo, $scope.Lin, $scope.Git, $scope.Loc]
-          ]
-
-        };
 
       });
 

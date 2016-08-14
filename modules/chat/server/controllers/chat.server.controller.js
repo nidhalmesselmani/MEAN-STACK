@@ -16,7 +16,7 @@ exports.create = function (req, res) {
   var chat = new Chat(req.body);
   chat.username = req.user.username;
   chat.text = req.body.text;
-   chat.profileImageURL = req.user.profileImageURL;
+  chat.profileImageURL = req.user.profileImageURL;
   chat.save(function(err) {
     if (err) {
       return res.status(400).send({
@@ -54,15 +54,15 @@ exports.delete = function (req, res) {
  * List of Chats
  */
 exports.list = function (req, res) {
-    Chat.find().sort('-created').exec(function(err, chats) {
-        if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        } else {
+  Chat.find().sort('-created').exec(function(err, chats) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
 
 
-            res.jsonp(chats);
-        }
-    });
+      res.jsonp(chats);
+    }
+  });
 };
