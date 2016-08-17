@@ -48,8 +48,6 @@ module.exports = {
       'modules/*/client/**/*.js',
       'public/assets/js/bootstrap.min.js',
       'public/assets/js/jquery.dcjqaccordion.2.7.js',
-      'public/assets/js/jquery.scrollTo.min.js',
-      'public/assets/js/jquery.nicescroll.js',
       'public/assets/js/jquery.sparkline.js',
       'public/assets/js/common-scripts.js',
       'public/assets/js/gritter/js/jquery.gritter.js',
