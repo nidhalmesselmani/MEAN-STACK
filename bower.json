@@ -16,7 +16,8 @@
     "angular-messages": "1.5.8",
     "owasp-password-strength-test": "~1.3.0",
     "angular-chart.js": "0.5.3",
-    "angular-material": "^1.0.9"
+    "angular-material": "^1.0.9",
+    "angular-smilies": "^1.3.0"
   },
   "resolutions": {
     "angular": "1.5.8"

@@ -121,6 +121,12 @@ ApplicationConfiguration.registerModule('core.admin.routes', ['ui.router']);
   app.registerModule('customers');
 })(ApplicationConfiguration);
 
+(function (app) {
+  'use strict';
+
+  app.registerModule('orders');
+})(ApplicationConfiguration);
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -1062,6 +1068,211 @@ angular.module('core').service('Socket', ['Authentication', '$state', '$timeout'
 
 })();
 
+(function () {
+  'use strict';
+
+  angular
+    .module('orders')
+    .run(menuConfig);
+
+  menuConfig.$inject = ['Menus'];
+
+  function menuConfig(Menus) {
+    // Set top bar menu items
+    Menus.addMenuItem('topbar', {
+      title: 'Orders',
+      state: 'orders',
+      type: 'dropdown',
+      roles: ['*']
+    });
+
+    // Add the dropdown list item
+    Menus.addSubMenuItem('topbar', 'orders', {
+      title: 'List Orders',
+      state: 'orders.list'
+    });
+
+    // Add the dropdown create item
+    Menus.addSubMenuItem('topbar', 'orders', {
+      title: 'Create Order',
+      state: 'orders.create',
+      roles: ['user']
+    });
+  }
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('orders')
+    .config(routeConfig);
+
+  routeConfig.$inject = ['$stateProvider'];
+
+  function routeConfig($stateProvider) {
+    $stateProvider
+      .state('orders', {
+        abstract: true,
+        url: '/orders',
+        template: '<ui-view/>'
+      })
+      .state('orders.list', {
+        url: '',
+        templateUrl: 'modules/orders/client/views/list-orders.client.view.html',
+        controller: 'OrdersListController',
+        controllerAs: 'vm',
+        data: {
+          pageTitle: 'Orders List'
+        }
+      })
+      .state('orders.create', {
+        url: '/create',
+        templateUrl: 'modules/orders/client/views/form-order.client.view.html',
+        controller: 'OrdersController',
+        controllerAs: 'vm',
+        resolve: {
+          orderResolve: newOrder
+        },
+        data: {
+          roles: ['user', 'admin'],
+          pageTitle : 'Orders Create'
+        }
+      })
+      .state('orders.edit', {
+        url: '/:orderId/edit',
+        templateUrl: 'modules/orders/client/views/form-order.client.view.html',
+        controller: 'OrdersController',
+        controllerAs: 'vm',
+        resolve: {
+          orderResolve: getOrder
+        },
+        data: {
+          roles: ['user', 'admin'],
+          pageTitle: 'Edit Order {{ orderResolve.name }}'
+        }
+      })
+      .state('orders.view', {
+        url: '/:orderId',
+        templateUrl: 'modules/orders/client/views/view-order.client.view.html',
+        controller: 'OrdersController',
+        controllerAs: 'vm',
+        resolve: {
+          orderResolve: getOrder
+        },
+        data:{
+          pageTitle: 'Order {{ articleResolve.name }}'
+        }
+      });
+  }
+
+  getOrder.$inject = ['$stateParams', 'OrdersService'];
+
+  function getOrder($stateParams, OrdersService) {
+    return OrdersService.get({
+      orderId: $stateParams.orderId
+    }).$promise;
+  }
+
+  newOrder.$inject = ['OrdersService'];
+
+  function newOrder(OrdersService) {
+    return new OrdersService();
+  }
+})();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('orders')
+    .controller('OrdersListController', OrdersListController);
+
+  OrdersListController.$inject = ['OrdersService'];
+
+  function OrdersListController(OrdersService) {
+    var vm = this;
+
+    vm.orders = OrdersService.query();
+  }
+})();
+
+(function () {
+  'use strict';
+
+  // Orders controller
+  angular
+    .module('orders')
+    .controller('OrdersController', OrdersController);
+
+  OrdersController.$inject = ['$scope', '$state', 'Authentication', 'orderResolve'];
+
+  function OrdersController ($scope, $state, Authentication, order) {
+    var vm = this;
+
+    vm.authentication = Authentication;
+    vm.order = order;
+    vm.error = null;
+    vm.form = {};
+    vm.remove = remove;
+    vm.save = save;
+
+    // Remove existing Order
+    function remove() {
+      if (confirm('Are you sure you want to delete?')) {
+        vm.order.$remove($state.go('orders.list'));
+      }
+    }
+
+    // Save Order
+    function save(isValid) {
+      if (!isValid) {
+        $scope.$broadcast('show-errors-check-validity', 'vm.form.orderForm');
+        return false;
+      }
+
+      // TODO: move create/update logic to service
+      if (vm.order._id) {
+        vm.order.$update(successCallback, errorCallback);
+      } else {
+        vm.order.$save(successCallback, errorCallback);
+      }
+
+      function successCallback(res) {
+        $state.go('orders.view', {
+          orderId: res._id
+        });
+      }
+
+      function errorCallback(res) {
+        vm.error = res.data.message;
+      }
+    }
+  }
+})();
+
+//Orders service used to communicate Orders REST endpoints
+(function () {
+  'use strict';
+
+  angular
+    .module('orders')
+    .factory('OrdersService', OrdersService);
+
+  OrdersService.$inject = ['$resource'];
+
+  function OrdersService($resource) {
+    return $resource('api/orders/:orderId', {
+      orderId: '@_id',
+      time:'@time'
+    }, {
+      update: {
+        method: 'PUT'
+      }
+    });
+  }
+})();
+
 'use strict';
 
 // Configuring the Articles module
@@ -1265,15 +1476,20 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
     .module('users')
     .controller('StatisticsUsersController', StatisticsUsersController);
 
-  StatisticsUsersController.$inject = ['$scope','Admin','Socket'];
+  StatisticsUsersController.$inject = ['$scope','Admin','Socket','OrdersService'];
 
-  function StatisticsUsersController($scope,Admin,Socket) {
+  function StatisticsUsersController($scope,Admin,Socket,OrdersService) {
     var vm = this;
     $scope.Fac =0;
     $scope.Goo=0;
     $scope.Lin=0;
     $scope.Git=0;
     $scope.Loc= 0;
+    $scope.OrderDates= [];
+    $scope.OrderAmount = [];
+
+    getOrders(1);
+
     // Statistics users controller logic
     // ...
 
@@ -1343,12 +1559,29 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
 
       };
     }
+    function displaylinechart() {
+
+      $scope.line = {
+        labels: $scope.OrderDates,
+        series: ['Series B'],
+
+        data: [
+          $scope.OrderAmount
+
+
+        ],
+        onClick: function (points, evt) {
+          console.log(points, evt);
+        }
+      };
+    }
 
 
 
 
     function init() {
       $scope.users = {};
+      $scope.orders = {};
       Admin.query(function (data) {
         $scope.users = data;
         $scope.users.forEach(function(valueobject){
@@ -1371,7 +1604,7 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
           }
         });
         displaybarchart();
-
+        displaylinechart();
 
 
       });
@@ -1379,6 +1612,36 @@ angular.module('users.admin').controller('UserListController', ['$scope', '$filt
 
 
 
+    }
+
+    $scope.data = {
+      availableOptions: [
+        { id: '1', name: 'this week' },
+        { id: '2', name: 'last week' }
+      ],
+      selectedOption: { id: '1', name: 'this week' } //This sets the default value of the select in the ui
+    };
+
+
+    $scope.selectWeek = function () {
+      getOrders($scope.data.selectedOption.id);
+    };
+    function getOrders(week) {
+      OrdersService.query({ time:week },function (data) {
+        var i = 0;
+        $scope.OrderAmount =[];
+        $scope.OrderDates= [];
+        data.forEach(function(valueobject){
+          var d = new Date(valueobject.created);
+          $scope.OrderAmount[i] = valueobject.amount;
+          $scope.OrderDates[i] = d.getFullYear()+'/'+d.getMonth()+'/'+d.getDate();
+          console.log($scope.OrderDates);
+          i++;
+        });
+
+        displaylinechart();
+      });
+  
     }
   }
 })();

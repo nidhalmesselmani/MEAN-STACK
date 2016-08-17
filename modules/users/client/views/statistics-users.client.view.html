@@ -6,16 +6,21 @@
     <div class="panel panel-default">
       <div class="panel-heading">Amount of users per providers</div>
       <div class="panel-body">
-        <canvas id="bar" class="chart chart-bar" data="bar.data" labels="bar.labels" series="bar.series" legend="true"
+        <canvas id="bar" class="chart chart-bar" data="bar.data" labels="bar.labels" series="bar.series" legend="false"
                 options="bar.options"></canvas>
       </div>
     </div>
 </div>
      <div class="col-lg-6 col-sm-12" >
        <div class="panel panel-default">
-         <div class="panel-heading">Turn Over</div>
+         <div class="panel-heading">Turn over in DT
+           <select name="mySelect" class="custom-select" id="mySelect" ng-change="selectWeek()"
+                   ng-options="option.name for option in data.availableOptions track by option.id"
+                   ng-model="data.selectedOption"></select>
+         </div>
          <div class="panel-body">
-           
+           <canvas id="line" class="chart chart-line chart-xl" data="line.data" labels="line.labels" legend="false"
+                series="line.series"></canvas>
          </div>
        </div>
      </div>
@@ -23,3 +28,6 @@
 
   </div>
 </section>
+
+
+
