@@ -9,6 +9,7 @@ module.exports = {
         'public/lib/angular-chart.js/dist/angular-chart.css'
       ],
       js: [
+        'public/assets/js/jquery.js',
         'public/lib/angular/angular.js',
         'public/lib/angular-resource/angular-resource.js',
         'public/lib/angular-animate/angular-animate.js',
@@ -20,8 +21,6 @@ module.exports = {
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/Chart.js/Chart.js',
         'public/lib/angular-chart.js/dist/angular-chart.js'
-
-
       ],
       tests: ['public/lib/angular-mocks/angular-mocks.js']
     },
@@ -41,7 +40,7 @@ module.exports = {
       'modules/*/client/scss/*.scss'
     ],
     js: [
-      'public/assets/js/jquery.js',
+
       'modules/core/client/app/config.js',
       'modules/core/client/app/init.js',
       'modules/*/client/*.js',

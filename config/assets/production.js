@@ -15,7 +15,6 @@ module.exports = {
         'public/assets/css/style-responsive.css'
       ],
       js: [
-        'public/assets/js/jquery.js',
         'public/lib/angular/angular.min.js',
         'public/lib/angular-resource/angular-resource.min.js',
         'public/lib/angular-animate/angular-animate.min.js',
@@ -27,10 +26,9 @@ module.exports = {
         'public/lib/owasp-password-strength-test/owasp-password-strength-test.js',
         'public/lib/Chart.js/Chart.min.js',
         'public/lib/angular-chart.js/dist/angular-chart.min.js',
+        'public/assets/js/jquery.js',
         'public/assets/js/bootstrap.min.js',
         'public/assets/js/jquery.dcjqaccordion.2.7.js',
-        'public/assets/js/jquery.scrollTo.min.js',
-        'public/assets/js/jquery.nicescroll.js',
         'public/assets/js/jquery.sparkline.js',
         'public/assets/js/common-scripts.js',
         'public/assets/js/gritter/js/jquery.gritter.js',
