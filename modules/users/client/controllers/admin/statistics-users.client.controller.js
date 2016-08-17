@@ -16,7 +16,6 @@
     $scope.Loc= 0;
     $scope.OrderDates= [];
     $scope.OrderAmount = [];
-
     getOrders(1);
 
     // Statistics users controller logic

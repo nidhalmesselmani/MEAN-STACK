@@ -36,9 +36,10 @@
 </head>
 
 <body class="ng-cloak">
-  <header ng-include="'/modules/core/client/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-default"></header>
-  <section class="content">
-    <section class="container">
+  <header ng-include="'/modules/core/client/views/header.client.view.html'" class="header black-bg"></header>
+  <aside ng-include="'modules/core/client/views/leftSidebar.html'"></aside>
+  <section id="main-content">
+    <section class="wrapper">
       {% block content %}{% endblock %}
     </section>
   </section>
