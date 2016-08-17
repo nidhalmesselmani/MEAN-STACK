@@ -41,16 +41,19 @@ module.exports = {
       'modules/*/client/scss/*.scss'
     ],
     js: [
-
+      'public/assets/js/jquery.js',
       'modules/core/client/app/config.js',
       'modules/core/client/app/init.js',
       'modules/*/client/*.js',
       'modules/*/client/**/*.js',
-      'public/assets/js/jquery.js'
-
-
-
-
+      'public/assets/js/bootstrap.min.js',
+      'public/assets/js/jquery.dcjqaccordion.2.7.js',
+      'public/assets/js/jquery.scrollTo.min.js',
+      'public/assets/js/jquery.nicescroll.js',
+      'public/assets/js/jquery.sparkline.js',
+      'public/assets/js/common-scripts.js',
+      'public/assets/js/gritter/js/jquery.gritter.js',
+      'public/assets/js/gritter-conf.js'
     ],
     views: ['modules/*/client/views/**/*.html'],
     templates: ['build/templates.js']

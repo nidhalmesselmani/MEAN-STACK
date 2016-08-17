@@ -1,4 +1,3 @@
-'use strict';
 var Gritter = function () {
 
     $('#add-sticky').click(function(){
