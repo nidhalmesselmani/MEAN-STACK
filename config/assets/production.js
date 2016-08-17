@@ -15,6 +15,7 @@ module.exports = {
         'public/assets/css/style-responsive.css'
       ],
       js: [
+        'public/assets/js/jquery.js',
         'public/lib/angular/angular.min.js',
         'public/lib/angular-resource/angular-resource.min.js',
         'public/lib/angular-animate/angular-animate.min.js',
