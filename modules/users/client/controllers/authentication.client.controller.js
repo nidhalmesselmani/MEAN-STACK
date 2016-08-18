@@ -26,24 +26,24 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$stat
         // If successful we assign the response to the global user model
         $scope.authentication.user = response;
 
-        if ($('#sidebar > ul').is(":visible") === true) {
-          $('#main-content').css({
+        if (angular.element('#sidebar > ul').is(':visible') === true) {
+          angular.element('#main-content').css({
             'margin-left': '0px'
           });
-          $('#sidebar').css({
+          angular.element('#sidebar').css({
             'margin-left': '-210px'
           });
-          $('#sidebar > ul').hide();
-          $("#container").addClass("sidebar-closed");
+          angular.element('#sidebar > ul').hide();
+          angular.element('#container').addClass('sidebar-closed');
         } else {
-          $('#main-content').css({
+          angular.element('#main-content').css({
             'margin-left': '210px'
           });
-          $('#sidebar > ul').show();
-          $('#sidebar').css({
+          angular.element('#sidebar > ul').show();
+          angular.element('#sidebar').css({
             'margin-left': '0'
           });
-          $("#container").removeClass("sidebar-closed");
+          angular.element('#container').removeClass('sidebar-closed');
         }
 
         // And redirect to the previous or home page
@@ -67,24 +67,24 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$stat
         $scope.authentication.user = response;
 
 
-        if ($('#sidebar > ul').is(":visible") === true) {
-          $('#main-content').css({
+        if (angular.element('#sidebar > ul').is(':visible') === true) {
+          angular.element('#main-content').css({
             'margin-left': '0px'
           });
-          $('#sidebar').css({
+          angular.element('#sidebar').css({
             'margin-left': '-210px'
           });
-          $('#sidebar > ul').hide();
-          $("#container").addClass("sidebar-closed");
+          angular.element('#sidebar > ul').hide();
+          angular.element('#container').addClass('sidebar-closed');
         } else {
-          $('#main-content').css({
+          angular.element('#main-content').css({
             'margin-left': '210px'
           });
-          $('#sidebar > ul').show();
-          $('#sidebar').css({
+          angular.element('#sidebar > ul').show();
+          angular.element('#sidebar').css({
             'margin-left': '0'
           });
-          $("#container").removeClass("sidebar-closed");
+          angular.element('#container').removeClass('sidebar-closed');
         }
         // And redirect to the previous or home page
         $state.go($state.previous.state.name || 'home', $state.previous.params);

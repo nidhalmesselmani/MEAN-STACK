@@ -18,38 +18,38 @@ angular.module('core').controller('HeaderController', ['$scope', '$state', 'Auth
     $scope.$on('$stateChangeSuccess', function () {
       $scope.isCollapsed = false;
     });
-   $scope.initTopHeader = function () {
-    $('.fa-bars').click(function () {
-      if ($('#sidebar > ul').is(":visible") === true) {
-        $('#main-content').css({
-          'margin-left': '0px'
-        });
-        $('#sidebar').css({
-          'margin-left': '-210px'
-        });
-        $('#sidebar > ul').hide();
-        $("#container").addClass("sidebar-closed");
-      } else {
-        $('#main-content').css({
-          'margin-left': '210px'
-        });
-        $('#sidebar > ul').show();
-        $('#sidebar').css({
-          'margin-left': '0'
-        });
-        $("#container").removeClass("sidebar-closed");
-      }
-    });
-  }
+    $scope.initTopHeader = function () {
+      angular.element('.fa-bars').click(function () {
+        if (angular.element('#sidebar > ul').is(':visible') === true) {
+          angular.element('#main-content').css({
+            'margin-left': '0px'
+          });
+          angular.element('#sidebar').css({
+            'margin-left': '-210px'
+          });
+          angular.element('#sidebar > ul').hide();
+          angular.element('#container').addClass('sidebar-closed');
+        } else {
+          angular.element('#main-content').css({
+            'margin-left': '210px'
+          });
+          angular.element('#sidebar > ul').show();
+          angular.element('#sidebar').css({
+            'margin-left': '0'
+          });
+          angular.element('#container').removeClass('sidebar-closed');
+        }
+      });
+    };
     $scope.initLeftSideBar = function () {
       if(!Authentication.user) {
-        $('#main-content').css({
+        angular.element('#main-content').css({
           'margin-left': '0px'
         });
-        $('#sidebar').css({
+        angular.element('#sidebar').css({
           'margin-left': '-210px'
         });
       }
-    }
+    };
   }
 ]);
